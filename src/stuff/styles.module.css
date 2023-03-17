@@ -1,0 +1,366 @@
+.form {
+  width: 450px;
+  min-height: 290px;
+  align-items: center;
+}
+.showMoreBtn {
+  padding: 12.5px 26.5px;
+  background-color: transparent;
+  border-color: #9873ff;
+  color: #9873ff;
+  cursor: pointer;
+  display: flex;
+}
+.container {
+  position: relative;
+  width: 1024px;
+  margin: 0 auto;
+  /* background-color: white; */
+}
+.table {
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0 1px;
+  margin-bottom: 40px;
+  padding: 0 20px;
+  width: 100%;
+}
+body {
+  background-color: #e5e5e5;
+}
+.formContainer {
+  /* background-color: white; */
+  display: flex;
+  justify-content: center;
+}
+/* .formWrap {
+  width: 450px;
+  height: 400px;
+  background-color: green;
+  position: absolute;
+} */
+.modal {
+  /* position: absolute;
+  left: 50%;
+  top: 2%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #ffffff;
+  box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.15);
+  border-radius: 7px;
+  min-width: 200px;
+  min-height: 160px;
+  max-width: 80%;
+  padding-top: 24px;
+  margin-bottom: 25px; */
+  position: absolute;
+  left: 50%;
+  top: 2%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  overflow-x: scroll;
+  max-height: 600px;
+
+  overflow-y: auto;
+  background: #ffffff;
+  box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.15);
+  border-radius: 7px;
+  min-width: 200px;
+  min-height: 160px;
+  max-width: 80%;
+  padding-top: 24px;
+  margin-bottom: 25px;
+}
+.content {
+  overflow-y: auto;
+}
+.backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+.submitButton {
+  background-color: #9873ff;
+  padding: 12.5px 35px;
+  border: none;
+  color: #ffffff;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.addContacts {
+  border: none;
+  background-color: #c8c5d1;
+  display: flex;
+  width: 450px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  padding: 25px 0;
+  margin-bottom: 25px;
+  cursor: pointer;
+}
+.input {
+  border: none;
+  width: 100%;
+  height: 25px;
+  border-bottom: 1px solid #c8c5d1;
+}
+.input:focus {
+  /* border: none; */
+  outline: none;
+}
+.input:not(:last-child) {
+  margin-bottom: 32px;
+}
+.extraInput {
+  width: 240px;
+  height: 37px;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #c8c5d1;
+  border-right: none;
+  border-left: none;
+}
+.select {
+  width: 123px;
+  height: 37px;
+  border: 1px solid #c8c5d1;
+}
+
+.hiddenFieldsWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #c8c5d1;
+  padding-top: 20px;
+  width: 450px;
+  margin-bottom: -1px;
+}
+.cancelButton {
+  background-color: white;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-bottom: 25px;
+}
+.closeModal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+}
+.newClient {
+  padding-left: 30px;
+  font-size: 18px;
+  margin-right: 9px;
+}
+.addBtnWrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.actionsRow {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 21px;
+  padding-right: 20px;
+}
+.deleteRowBtn,
+.editRowBtn {
+  display: flex;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tableBody {
+  background-color: #ffffff;
+}
+.contactsImg:not(:nth-child(5n)) {
+  margin-right: 7px;
+}
+.tableRow {
+  height: 60px;
+}
+.clientName {
+  max-width: 240px;
+}
+.imageRow {
+  max-width: 114px;
+  text-align: left;
+  position: relative;
+}
+p {
+  margin: 0;
+}
+.header {
+  height: 90px;
+  background-color: #ffffff;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+}
+.logo {
+  padding-left: 20px;
+  margin-right: 53px;
+}
+.headerInput {
+  height: 44px;
+  width: 581px;
+  box-sizing: border-box;
+}
+.sortLetters {
+  color: #9873ff;
+  font-size: 10px;
+}
+.rowText {
+  font-size: 10px;
+  color: #b0b0b0;
+}
+.rowTextId {
+  font-size: 10px;
+  color: #9873ff;
+}
+
+.column {
+  font-size: 14px;
+}
+th {
+  text-align: left;
+}
+.timeSpan {
+  color: #b0b0b0;
+}
+.dateSpan {
+  margin-right: 10px;
+}
+.idColumn {
+  padding-left: 20px;
+  font-size: 12px;
+  color: #b0b0b0;
+}
+.addBtnSpan {
+  padding-left: 10px;
+}
+.label {
+  text-align: left;
+}
+.inputWrap {
+  padding: 30px;
+}
+.inputs:not(:last-child) {
+  margin-bottom: 15px;
+}
+.inputs {
+  display: flex;
+}
+.formButtonsWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.labelSpan {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 14px;
+  color: #b0b0b0;
+}
+.labelStar {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 14px;
+  color: #9873ff;
+}
+.removeInputBtn {
+  width: 27px;
+  height: 37px;
+  border: 1px solid #c8c5d1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.clientId {
+  color: #b0b0b0;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.tooltip {
+  position: relative;
+
+  width: 16px;
+  height: 16px;
+}
+.popup {
+  position: absolute;
+  left: -75px;
+  bottom: 29px;
+  width: 163px;
+  min-height: 31px;
+  background-color: #666;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.triangle {
+  position: absolute;
+  right: 73px;
+  bottom: -7px;
+  width: 0;
+  height: 0;
+  border: 7px solid transparent;
+  border-top: 14px solid #666;
+  border-bottom: 0;
+}
+.dot {
+  position: absolute;
+  top: 3px;
+  left: 7px;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: white;
+}
+.stick {
+  height: 7px;
+  width: 2px;
+  position: absolute;
+  background-color: #ffffff;
+  left: 7px;
+  top: 6px;
+}
+.tooltip:hover .popup,
+.tooltip:focus .popup {
+  opacity: 1;
+}
+.tooltip:focus {
+  outline: none;
+}
+
+.popup_text {
+  text-align: center;
+  margin: 0;
+  max-width: 163px;
+  padding: 6px 7px;
+  color: white;
+}
