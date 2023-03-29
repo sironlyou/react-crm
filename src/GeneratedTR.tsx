@@ -3,45 +3,26 @@ import { Mail } from "./Icons/Mail";
 import { Other } from "./Icons/Other";
 import { Phone } from "./Icons/Phone";
 import { VK } from "./Icons/VK";
-import { loadClient, loadClients, removeClient } from "./stuff/serverFunctions";
-import { IRenderListProps } from "./Table";
+import { fetchData, loadClient, removeClient } from "./stuff/serverFunctions";
 import styles from "./stuff/styles.module.css";
 import { DeleteRowIcon } from "./Icons/DeleteRowIcon";
 import { EditIcon } from "./Icons/EditIcon";
 import { getDate, getTime } from "./stuff/timeFunctions";
+import { $clients, updateClient, updateContacts, updateModal } from "./stuff/store";
+import { useStore } from "effector-react";
 
-export function GeneratedTR({
-  setState,
-
-  state,
-  renderList,
-  editClient,
-  inputFields,
-  setInputFields,
-  setIsLoading,
-  isLoading,
-  setEditClient,
-  setRenderList,
-  isEditModalOpen,
-  setIsEditModalOpen,
-}: IRenderListProps) {
-  const fetchData = async () => {
-    const list = await loadClients();
-    setRenderList(list);
-  };
+export function GeneratedTR() {
+  const clients = useStore($clients);
   const fetchClient = async (id: string) => {
     const object = await loadClient(id);
-    let arr = [];
-    arr.push(object);
-    setEditClient(arr);
-    setState(object);
-    setInputFields(object.contacts);
+    updateClient(object);
+    updateContacts(object.contacts);
   };
 
   return (
     <>
-      {renderList &&
-        renderList.map(({ id, contacts, createdAt, lastName, name, surname, updatedAt }) => (
+      {clients &&
+        clients.map(({ id, contacts, createdAt, lastName, name, surname, updatedAt }) => (
           <tr className={styles.tableRow} onClick={(e) => {}} key={id}>
             <th className={styles.idColumn}>{id}</th>
             <th className={styles.column}>
@@ -77,9 +58,7 @@ export function GeneratedTR({
                 className={styles.editRowBtn}
                 onClick={(e) => {
                   fetchClient(id);
-
-                  setIsLoading(true);
-                  setIsEditModalOpen(true);
+                  updateModal("edit");
                 }}>
                 <EditIcon /> Изменить
               </button>
@@ -87,7 +66,6 @@ export function GeneratedTR({
                 className={styles.deleteRowBtn}
                 onClick={(e) => {
                   removeClient(id);
-
                   setTimeout(() => {
                     fetchData();
                   }, 200);

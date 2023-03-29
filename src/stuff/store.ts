@@ -1,43 +1,15 @@
-// import { createEvent, createStore } from "effector";
-
-// export interface IClient{
-//     name:string;
-//     lastName:string
-//     surname:string
-//     contacts:IContacts[]
-// }
-// export interface IContacts{
-//     type:string
-//     value:string
-// }
-// export interface IServerClient {
-//   name: string;
-//   lastName: string;
-//   surname: string;
-//   contacts: IContacts[];
-//   id:string
-//   createdAt:string
-//   udatedAt:string
-// }
-
-// type Store= {
-// client:IClient[]
-// newClient:string
-// }
-// const addClientToList = (client:IClient[],)
-// const createClient = createEvent<string>()
-// const setClient = createEvent()
-// const store = createStore<Store>({
-//     client:[],
-//     newClient:''
-// })
-// .on(createClient,(state,newClient)=>({
-//     ...state,
-//     newClient
-// }))
-// .on(setClient,(state)=>({
-// ...state,
-// newClient:'',
-// client:[]
-// }))
-export {};
+import { createEvent, createStore } from "effector";
+import { IContacts, IRenderList, IState } from "./interface";
+export const updateModal = createEvent<string>();
+export const $modal = createStore<string>("").on(updateModal, (_, newModal) => newModal);
+export const updateClient = createEvent<IState>();
+export const $client = createStore<IState>({ lastName: "", name: "", surname: "" }).on(updateClient, (_, newClient) => newClient);
+export const updateContacts = createEvent<IContacts[]>();
+export const $contacts = createStore<IContacts[]>([]).on(updateContacts, (_, newContact) => newContact);
+$contacts.watch((state) => console.log("contacts", state));
+export const updateClients = createEvent<IRenderList[]>();
+export const $clients = createStore<IRenderList[]>([]).on(updateClients, (_, newClients) => newClients);
+$clients.watch((state) => console.log("list", state));
+$client.watch((state) => console.log("client", state));
+export const updateSearch = createEvent<string>();
+export const $search = createStore<string>("").on(updateSearch, (_, newSearch) => newSearch);

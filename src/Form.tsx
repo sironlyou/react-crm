@@ -1,83 +1,62 @@
 import React from "react";
 import ReactDOM from "react-dom";
-
-import { IRenderList } from "./App";
 import { AddIcon } from "./Icons/AddIcon";
 import { CloseIcon } from "./Icons/CloseIcon";
 import { DeleteIcon } from "./Icons/DeleteIcon";
 
-import { loadClients, postClient } from "./stuff/serverFunctions";
+import { fetchData, options, postClient, reset } from "./stuff/serverFunctions";
 import styles from "./stuff/styles.module.css";
-import Dropdown from "react-dropdown";
-// import "react-dropdown/style.css";
+import { $client, $contacts, $modal, updateClient, updateContacts } from "./stuff/store";
+import { useStore } from "effector-react";
+import ReactDropdown from "react-dropdown";
+import "../node_modules/react-dropdown/style.css";
 
-export interface IState {
-  surname: string;
-  name: string;
-  lastName: string;
-  contacts?: IContacts[];
-}
-export interface IContacts {
-  type: string;
-  value: string;
-}
-export interface StateProps {
-  state: IState;
-  setState: React.Dispatch<React.SetStateAction<IState>>;
-  renderList: IRenderList[] | undefined;
-  setRenderList: React.Dispatch<React.SetStateAction<IRenderList[] | undefined>>;
-  isModalOpen?: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  inputFields: IContacts[];
-  setInputFields: React.Dispatch<React.SetStateAction<IContacts[]>>;
-}
-
-export function Form({ state, setState, renderList, setRenderList, inputFields, setInputFields, setIsModalOpen, isModalOpen }: StateProps) {
-  // const [inputFields, setInputFields] = useState<IContacts[]>([]);
-
-  let data = [...inputFields];
-
-  const fetchData = async () => {
-    const list = await loadClients();
-    setRenderList(list);
-  };
+export const Form = () => {
+  const client = useStore($client);
+  const contacts = useStore($contacts);
+  const modal = useStore($modal);
   const handleRemove = (index: number) => {
-    const list = [...inputFields];
+    const list = [...contacts];
     list.splice(index, 1);
-    setInputFields(list);
+    updateContacts(list);
+    updateClient({ ...client, contacts: list });
   };
-  const options = ["Телефон", "VK", "Facebook", "Email", "Другое"];
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    setState({ ...state, contacts: data });
-
-    postClient(state);
+    updateClient({ ...client, contacts: contacts });
+    postClient(client);
     setTimeout(() => {
       fetchData();
     }, 200);
-    setState({ lastName: "", name: "", surname: "" });
-    setInputFields([]);
-    setIsModalOpen(false);
+    reset();
   };
 
   const addFields = () => {
-    if (inputFields.length > 9) return;
-    let newField = { type: "VK", value: "" };
-    setInputFields([...inputFields, newField]);
+    if (contacts.length > 9) return;
+    updateContacts([...contacts, { type: "VK", value: "" }]);
   };
 
   const node = document.querySelector("#modal_root");
   if (!node) return null;
   return ReactDOM.createPortal(
-    <div className={styles.backdrop} onClick={() => setIsModalOpen(!isModalOpen)}>
+    <div
+      className={styles.backdrop}
+      onClick={() => {
+        reset();
+      }}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <span className={styles.newClient}>Новый клиент</span>
+        {modal === "add" && <span className={styles.newClient}>Новый клиент</span>}
+        {modal === "edit" && (
+          <div>
+            <span className={styles.newClient}>Изменить данные</span>
+            <span className={styles.clientId}>ID: {client.id}</span>
+          </div>
+        )}
         <button
           className={styles.closeModal}
           onClick={(e) => {
-            setIsModalOpen(false);
+            reset();
           }}>
           <CloseIcon />
         </button>
@@ -90,9 +69,9 @@ export function Form({ state, setState, renderList, setRenderList, inputFields, 
             <input
               className={styles.input}
               type="text"
-              value={state.lastName}
+              value={client.lastName}
               onChange={(e) => {
-                setState({ ...state, lastName: e.target.value });
+                updateClient({ ...client, lastName: e.target.value });
               }}></input>
             <label className={styles.label}>
               <span className={styles.labelSpan}>Имя</span>
@@ -100,9 +79,9 @@ export function Form({ state, setState, renderList, setRenderList, inputFields, 
             </label>
             <input
               className={styles.input}
-              value={state.name}
+              value={client.name}
               onChange={(e) => {
-                setState({ ...state, name: e.target.value });
+                updateClient({ ...client, name: e.target.value });
               }}
               type="text"></input>
             <label className={styles.label}>
@@ -110,51 +89,34 @@ export function Form({ state, setState, renderList, setRenderList, inputFields, 
             </label>
             <input
               className={styles.input}
-              value={state.surname}
+              value={client.surname}
               onChange={(e) => {
-                setState({ ...state, surname: e.target.value });
+                updateClient({ ...client, surname: e.target.value });
               }}
               type="text"></input>
           </div>
-          <div className={inputFields.length > 0 ? styles.hiddenFieldsWrap : ""}>
+          <div className={contacts.length > 0 ? styles.hiddenFieldsWrap : ""}>
             <div className={styles.hiddenFields}>
-              {inputFields.map((input, index) => {
+              {contacts.map((input, index) => {
                 return (
                   <div className={styles.inputs}>
-                    <Dropdown
+                    <ReactDropdown
                       onChange={(e) => {
-                        data[index].type = e.value;
-                        setState({ ...state, contacts: data });
+                        contacts[index].type = e.value;
+                        updateClient({ ...client, contacts: contacts });
                       }}
-                      value={data[index].type}
-                      // className={styles.dropdown}
+                      value={contacts[index].type}
                       options={options}
                       placeholder="Select an option"
                     />
-                    {/* <select
-                      className={styles.select}
-                      onChange={(e) => {
-                        data[index].type = e.currentTarget.value;
-                        setState({ ...state, contacts: data });
-                      }}
-                      value={data[index].type}
-                      name=""
-                      id="">
-                      <option value="VK">VK</option>
 
-                      <option value="FB">FB</option>
-                      <option value="Email">Email</option>
-
-                      <option value="Phone">Phone</option>
-                      <option value="Other">Other</option>
-                    </select> */}
                     <input
                       className={styles.extraInput}
                       onChange={(e) => {
-                        data[index].value = e.target.value;
-                        setState({ ...state, contacts: data });
+                        contacts[index].value = e.target.value;
+                        updateClient({ ...client, contacts: contacts });
                       }}
-                      value={data[index].value}></input>
+                      value={contacts[index].value}></input>
                     <button className={styles.removeInputBtn} type="button" onClick={(e) => handleRemove(index)}>
                       <DeleteIcon />
                     </button>
@@ -174,7 +136,7 @@ export function Form({ state, setState, renderList, setRenderList, inputFields, 
               className={styles.cancelButton}
               type="button"
               onClick={(e) => {
-                setIsModalOpen(false);
+                reset();
               }}>
               Отмена
             </button>
@@ -184,4 +146,4 @@ export function Form({ state, setState, renderList, setRenderList, inputFields, 
     </div>,
     node
   );
-}
+};

@@ -1,10 +1,15 @@
-// import { IServerItem } from "../react/interface";
+import { updateClient, updateClients, updateContacts, updateModal } from "./store";
 
 export async function loadClients() {
   const response = await fetch("http://localhost:4000/api/clients");
   const data = await response.json();
   return data;
 }
+export const fetchData = async () => {
+  const list = await loadClients();
+  // setRenderList(list);
+  updateClients(list);
+};
 export async function loadClient(id: string) {
   const response = await fetch(`http://localhost:4000/api/clients/${id}`);
   const data = await response.json();
@@ -39,3 +44,15 @@ export function patchClient(id: string, obj: object) {
     },
   });
 }
+export const reset = () => {
+  updateModal("");
+  updateContacts([]);
+  updateClient({ lastName: "", name: "", surname: "" });
+};
+export const options = ["Телефон", "VK", "Facebook", "Email", "Другое"];
+
+export const search = async (query: string) => {
+  const response = await fetch(`http://localhost:4000/api/clients?search=${query}`);
+  const data = await response.json();
+  updateClients(data);
+};

@@ -1,56 +1,20 @@
 // import { useEffect } from "react";
-import { useEffect, useState } from "react";
-import { IRenderList } from "./App";
-import { IContacts, IState } from "./Form";
+import { useState } from "react";
+
 import { GeneratedTR } from "./GeneratedTR";
 import { SortAsc } from "./Icons/SortAsc";
 import { SortDesc } from "./Icons/SortDesc";
 
-import { loadClients } from "./stuff/serverFunctions";
+import { fetchData } from "./stuff/serverFunctions";
 import styles from "./stuff/styles.module.css";
+import { $clients, updateClients } from "./stuff/store";
+import { useStore } from "effector-react";
+import { IRenderList } from "./stuff/interface";
 
 // import { loadClients } from "./stuff/serverFunctions";
-export interface IRenderListProps {
-  state: IState;
-  setState: React.Dispatch<React.SetStateAction<IState>>;
-  renderList: IRenderList[] | undefined;
-  setRenderList: React.Dispatch<React.SetStateAction<IRenderList[] | undefined>>;
-  isEditModalOpen?: boolean;
-  setIsEditModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isLoading?: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  editClient: IRenderList[] | undefined;
-  setEditClient: React.Dispatch<React.SetStateAction<IRenderList[] | undefined>>;
-  inputFields: IContacts[];
-  setInputFields: React.Dispatch<React.SetStateAction<IContacts[]>>;
-  serverList?: IRenderList[] | undefined;
-  setServerList: React.Dispatch<React.SetStateAction<IRenderList[] | undefined>>;
-}
-export function Table({
-  serverList,
-  setServerList,
-  state,
-  setState,
-  renderList,
-  inputFields,
-  setInputFields,
-  setRenderList,
-  editClient,
-  isLoading,
-  setIsLoading,
-  setEditClient,
-  isEditModalOpen,
-  setIsEditModalOpen,
-}: IRenderListProps) {
-  useEffect(() => {
-    const fetchData = async () => {
-      const list = await loadClients();
 
-      setServerList(list);
-    };
-
-    fetchData();
-  }, [renderList, setServerList]);
+export function Table() {
+  const clients = useStore($clients);
   const [sort, setSort] = useState({ direction: "default", column: "" });
   const handleClick = (property: keyof IRenderList) => {
     setSort({ column: property, direction: "default" });
@@ -65,23 +29,22 @@ export function Table({
     }
   };
   let copyArr = [];
-  copyArr.push(renderList);
+  copyArr.push(clients);
   const sortAsc = (property: keyof IRenderList) => {
-    if (renderList === undefined) return;
-    copyArr = renderList.sort((a: IRenderList, b: IRenderList) => (a[property] > b[property] ? -1 : 1));
-    setRenderList(copyArr);
-    // console.log(copyStudentList);
+    if (clients === undefined) return;
+    copyArr = clients.sort((a: IRenderList, b: IRenderList) => (a[property] > b[property] ? -1 : 1));
+    updateClients(copyArr);
 
     setSort({ direction: "asc", column: property });
   };
   const setDefault = () => {
     setSort({ direction: "default", column: "" });
-    setRenderList(serverList);
+    fetchData();
   };
   const sortDesc = (property: keyof IRenderList) => {
-    if (renderList === undefined) return;
-    copyArr = renderList.sort((a: IRenderList, b: IRenderList) => (a[property] > b[property] ? 1 : -1));
-    setRenderList(copyArr);
+    if (clients === undefined) return;
+    copyArr = clients.sort((a: IRenderList, b: IRenderList) => (a[property] > b[property] ? 1 : -1));
+    updateClients(copyArr);
 
     setSort({ direction: "desc", column: property });
   };
@@ -109,30 +72,15 @@ export function Table({
             <span className={styles.rowText}> Последние изменения </span> {sortArrow("updatedAt")}
           </th>
           <th>
-            {" "}
             <span className={styles.rowText}>контакты </span>
           </th>
-          <th style={{ cursor: "pointer" }} onClick={(e) => alert("а сюда нахер тыкаешь?")}>
+          <th>
             <span className={styles.rowText}> Действия </span>
           </th>
         </tr>
       </thead>
       <tbody className={styles.tableBody}>
-        <GeneratedTR
-          setServerList={setServerList}
-          inputFields={inputFields}
-          setInputFields={setInputFields}
-          state={state}
-          setState={setState}
-          isLoading={isLoading}
-          setIsLoading={setIsLoading}
-          editClient={editClient}
-          setEditClient={setEditClient}
-          setIsEditModalOpen={setIsEditModalOpen}
-          isEditModalOpen={isEditModalOpen}
-          renderList={renderList}
-          setRenderList={setRenderList}
-        />
+        <GeneratedTR />
       </tbody>
     </table>
   );
